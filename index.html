@@ -49,13 +49,9 @@
             transition: opacity 1.5s ease;
         }
 
-        #popup-video {
+        #popup-media-container {
             width: 100%;
-            max-height: 50vh; /* Prevents video from taking over the whole screen on short windows */
-            object-fit: contain;
-            border-radius: 10px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: none;
         }
 
@@ -384,9 +380,7 @@
 
     <!-- Intro Video Layer -->
     <div id="intro-video-container">
-        <video id="intro-video" playsinline>
-            <source src="StartScreen.mp4" type="video/mp4">
-        </video>
+        <div id="intro-video" style="overflow: hidden; background: black;"></div>
         <button id="begin-evolution-btn" style="margin-top: 30px; background-color: var(--primary-blue); color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Start Evolution</button>
     </div>
     <button id="go-back-btn">Go Back</button>
@@ -405,7 +399,9 @@
     <!-- Central Popup -->
     <div id="central-popup">
         <h2 id="popup-title"></h2>
-        <video id="popup-video" controls autoplay muted playsinline></video>
+        <div id="popup-media-container">
+            <!-- Video or Iframe will be injected here -->
+        </div>
         <audio id="popup-audio" controls autoplay></audio>
         <p id="popup-content"></p>
         <div id="popup-buttons"></div>
@@ -551,6 +547,42 @@
             }
         ];
 
+        const streamableLinks = {
+            "Lipid Compartmentalization.mp4": { url: "https://streamable.com/e/geu5q9?autoplay=1&loop=0", padding: "75.000%" },
+            "Mitochondrial Endosymbiosis.mp4": { url: "https://streamable.com/e/myog3w?autoplay=1&loop=0", padding: "74.922%" },
+            "Cadherin Protein Adhesion.mp4": { url: "https://streamable.com/e/saykyz?autoplay=1&loop=0", padding: "56.250%" },
+            "Triploblastic Cephalization.mp4": { url: "https://streamable.com/e/qxkaqk?autoplay=1&loop=0", padding: "56.250%" },
+            "Internal Notochord.mp4": { url: "https://streamable.com/e/szwgdh?autoplay=1&loop=0", padding: "56.250%" },
+            "Ossified Vertebral Column.mp4": { url: "https://streamable.com/e/rn0mc6?autoplay=1&loop=0", padding: "56.250%" },
+            "Sarcopterygii Bone Core.mp4": { url: "https://streamable.com/e/5kvdnv?autoplay=1&loop=0", padding: "56.250%" },
+            "Dactylous Walking Limbs.mp4": { url: "https://streamable.com/e/8yvr1v?autoplay=1&loop=0", padding: "56.250%" },
+            "Amniotic Membrane Layout.mp4": { url: "https://streamable.com/e/wghcx1?autoplay=1&loop=0", padding: "56.250%" },
+            "Metabolic Fur Insulation.mp4": { url: "https://streamable.com/e/z3q3nr?autoplay=1&loop=0", padding: "56.250%" },
+            "Binocular Vision & Flat Nails.mp4": { url: "https://streamable.com/e/39wwtn?autoplay=1&loop=0", padding: "56.250%" },
+            "Bipedal Pelvis Rotation.mp4": { url: "https://streamable.com/e/tgi19p?autoplay=1&loop=0", padding: "56.250%" },
+            "Opposable Thumb Precision.mp4": { url: "https://streamable.com/e/tazob4?autoplay=1&loop=0", padding: "56.250%" },
+            "Metabolic Gut Reduction.mp4": { url: "https://streamable.com/e/zx9g7n?autoplay=1&loop=0", padding: "56.250%" },
+            "Symbolic Culture & Encephalization.mp4": { url: "https://streamable.com/e/og6ex8?autoplay=1&loop=0", padding: "56.250%" },
+            "StartScreen.mp4": { url: "https://streamable.com/e/0cfs4o?autoplay=1&loop=0&nocontrols=1", padding: "56.250%" }
+        };
+
+        function getVideoHtml(filename) {
+            const cleanName = filename.split('/').pop();
+            const config = streamableLinks[cleanName];
+            if (config) {
+                return `<div style="position:relative; width:100%; height:0px; padding-bottom:${config.padding}"><iframe allow="fullscreen;autoplay" allowfullscreen height="100%" src="${config.url}" width="100%" style="border:none; width:100%; height:100%; position:absolute; left:0px; top:0px; overflow:hidden; border-radius: 10px;"></iframe></div>`;
+            }
+            return `<video id="popup-video" controls autoplay muted playsinline style="width: 100%; max-height: 50vh; object-fit: contain; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"><source src="${filename}" type="video/mp4"></video>`;
+        }
+
+        function getAudioUrl(filename) {
+            if (!filename) return "";
+            // Correct the folder name to match your GitHub repository ("audio recordings")
+            // and use encodeURI to handle spaces correctly on the web.
+            const correctedPath = filename.replace("AP Biology Audio Recordings/", "audio recordings/");
+            return encodeURI(correctedPath);
+        }
+
         let currentStageIndex = 0;
         let historyStack = []; // Stores { forkGroupId, cameraTransform, nodeCoords, stageIndex } for previous *correct* steps
         let isPopupActive = false;
@@ -665,7 +697,7 @@
             const popupTitle = document.getElementById('popup-title');
             const popupContent = document.getElementById('popup-content');
             const popupButtons = document.getElementById('popup-buttons');
-            const popupVideo = document.getElementById('popup-video');
+            const mediaContainer = document.getElementById('popup-media-container');
             const popupAudio = document.getElementById('popup-audio');
             const bgMusic = document.getElementById('bg-music');
 
@@ -674,9 +706,8 @@
             popupButtons.innerHTML = ''; // Clear previous buttons
 
             // Reset and Handle Media Logic
-            popupVideo.style.display = 'none';
-            popupVideo.pause();
-            popupVideo.src = "";
+            mediaContainer.style.display = 'none';
+            mediaContainer.innerHTML = '';
             popupAudio.style.display = 'none';
             popupAudio.pause();
             popupAudio.src = "";
@@ -686,12 +717,10 @@
 
             if (mediaPath) {
                 if (mediaPath.toLowerCase().endsWith('.mp4')) {
-                    popupVideo.src = mediaPath;
-                    popupVideo.style.display = 'block';
-                    popupVideo.load();
-                    popupVideo.play().catch(e => console.log("Video autoplay blocked"));
+                    mediaContainer.style.display = 'block';
+                    mediaContainer.innerHTML = getVideoHtml(mediaPath);
                 } else {
-                    popupAudio.src = mediaPath;
+                    popupAudio.src = getAudioUrl(mediaPath);
                     popupAudio.style.display = 'block';
                     popupAudio.load();
                     popupAudio.play().catch(e => console.log("Audio autoplay blocked"));
@@ -732,10 +761,11 @@
 
         function handleFinalContinue() {
             const popup = document.getElementById('central-popup');
-            const popupVideo = document.getElementById('popup-video');
+            const mediaContainer = document.getElementById('popup-media-container');
             const popupAudio = document.getElementById('popup-audio');
             
-            popupVideo.pause();
+            // Stop any playing video or iframe
+            mediaContainer.innerHTML = '';
             popupAudio.pause();
             popup.classList.remove('active');
             
@@ -761,11 +791,12 @@
 
         function zoomOutAndContinue(proceed, prevStageIndex, prevNodeCoords) {
             const popup = document.getElementById('central-popup');
-            const popupVideo = document.getElementById('popup-video');
+            const mediaContainer = document.getElementById('popup-media-container');
             const popupAudio = document.getElementById('popup-audio');
             const bgMusic = document.getElementById('bg-music');
             
-            popupVideo.pause(); // Stop video when closing
+            // Stop any playing video or iframe
+            mediaContainer.innerHTML = '';
             popupAudio.pause(); // Stop audio when closing
             bgMusic.volume = 0.15; // Restore background volume
             popup.classList.remove('active');
@@ -1060,7 +1091,7 @@
             // Fade out initial UI and show video
             overlay.classList.add('hidden');
             introContainer.classList.add('active');
-            introVideo.play();
+            introVideo.innerHTML = getVideoHtml("StartScreen.mp4");
         }
 
         function beginEvolution() {
@@ -1070,7 +1101,8 @@
             const bgAnim = document.getElementById('background-tree-animation');
             const bgMusic = document.getElementById('bg-music');
 
-            introVideo.pause();
+            // Clear intro video content to stop playback
+            introVideo.innerHTML = '';
             introContainer.classList.remove('active');
 
             // Stop background spawning
