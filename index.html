@@ -577,10 +577,9 @@
 
         function getAudioUrl(filename) {
             if (!filename) return "";
-            // Correct the folder name to match your GitHub repository ("audio recordings")
-            // and use encodeURI to handle spaces correctly on the web.
-            const correctedPath = filename.replace("AP Biology Audio Recordings/", "audio recordings/");
-            return encodeURI(correctedPath);
+            // Use encodeURI to handle spaces correctly for the web.
+            // GitHub Pages is case-sensitive, so we use the path exactly as defined in 'stages'.
+            return encodeURI(filename);
         }
 
         let currentStageIndex = 0;
