@@ -318,7 +318,7 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 40px;
+            padding: 30px;
             max-width: 750px;
             width: 90%;
             max-height: 90vh;
@@ -339,16 +339,16 @@
         }
 
         #central-popup h2 {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             margin-bottom: 20px;
             color: white; /* Ensure title is white */
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         #central-popup p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         #popup-buttons button {
@@ -570,9 +570,17 @@
             const cleanName = filename.split('/').pop();
             const config = streamableLinks[cleanName];
             if (config) {
-                return `<div style="position:relative; width:100%; height:0px; padding-bottom:${config.padding}"><iframe allow="fullscreen;autoplay" allowfullscreen height="100%" src="${config.url}" width="100%" style="border:none; width:100%; height:100%; position:absolute; left:0px; top:0px; overflow:hidden; border-radius: 10px;"></iframe></div>`;
+                // Calculate a max-width in vh units to ensure height doesn't exceed ~48vh.
+                // This leaves enough room for text/buttons without scrolling.
+                const paddingPercent = parseFloat(config.padding);
+                const maxWidthVh = (48 / (paddingPercent / 100)).toFixed(2);
+                return `<div style="max-width: ${maxWidthVh}vh; margin: 0 auto; width: 100%;">
+                            <div style="position:relative; width:100%; height:0px; padding-bottom:${config.padding}">
+                                <iframe allow="fullscreen;autoplay" allowfullscreen height="100%" src="${config.url}" width="100%" style="border:none; width:100%; height:100%; position:absolute; left:0px; top:0px; overflow:hidden; border-radius: 10px;"></iframe>
+                            </div>
+                        </div>`;
             }
-            return `<video id="popup-video" controls autoplay muted playsinline style="width: 100%; max-height: 50vh; object-fit: contain; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"><source src="${filename}" type="video/mp4"></video>`;
+            return `<video id="popup-video" controls autoplay muted playsinline style="width: 100%; max-height: 48vh; display: block; margin: 0 auto; object-fit: contain; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"><source src="${filename}" type="video/mp4"></video>`;
         }
 
         function getAudioUrl(filename) {
