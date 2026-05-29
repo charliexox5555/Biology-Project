@@ -367,6 +367,53 @@
         }
         .status-correct { color: var(--correct-green); }
         .status-wrong { color: var(--wrong-red); }
+
+        /* Resources Panel Styles */
+        #resources-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: white;
+        }
+
+        #resources-panel.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        #resources-panel h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+        }
+
+        #close-resources-btn {
+            display: block;
+            margin: 20px auto 0;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -385,6 +432,28 @@
     </div>
     <button id="go-back-btn">Go Back</button>
     <button id="restart-game-btn" style="position: fixed; bottom: 40px; right: 40px; background: var(--primary-blue); color: white; border: none; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; z-index: 10; display: none; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); transition: var(--transition);">Restart Game</button>
+    <button id="resources-btn" style="position: fixed; top: 20px; left: 20px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; cursor: pointer; z-index: 100; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Resources</button>
+
+    <!-- Resources Popup -->
+    <div id="resources-panel">
+        <h2>Works Cited</h2>
+        <div style="font-size: 0.9rem; line-height: 1.4;">
+            <p>Dawkins, Richard. “Human evolution.” Wikipedia, 2026, <a href="https://en.wikipedia.org/wiki/Human_evolution" target="_blank" style="color: var(--accent-gold); text-decoration: none;">https://en.wikipedia.org/wiki/Human_evolution</a>. Accessed 22 May 2026.</p>
+            
+            <p>Hale, Tom. “Humans In Europe Mastered Fire Way Earlier Than We Previously Thought.” IFLScience, 18 May 2023, <a href="https://www.iflscience.com/humans-in-europe-mastered-fire-way-earlier-than-we-previously-thought-68998" target="_blank" style="color: var(--accent-gold); text-decoration: none;">https://www.iflscience.com/humans-in-europe-mastered-fire-way-earlier-than-we-previously-thought-68998</a>. Accessed 18 May 2026.</p>
+            
+            <p>Koppes, Steve. “The origin of life on Earth, explained.” University of Chicago News, 12 September 2022, <a href="https://news.uchicago.edu/explainer/origin-life-earth-explained" target="_blank" style="color: var(--accent-gold); text-decoration: none;">https://news.uchicago.edu/explainer/origin-life-earth-explained</a>. Accessed 18 May 2026.</p>
+            
+            <p>Padian, Kevin. “The emergence of humans.” Understanding Evolution, 2025, <a href="https://evolution.berkeley.edu/what-are-evograms/the-emergence-of-humans/" target="_blank" style="color: var(--accent-gold); text-decoration: none;">https://evolution.berkeley.edu/what-are-evograms/the-emergence-of-humans/</a>. Accessed 18 May 2026.</p>
+            
+            <p>Phillips, Carys, and Ettore Mazza. “What Did Humans Evolve From?” YouTube, 21 November 2025, <a href="https://www.youtube.com/watch?v=Raj12AUTKUA" target="_blank" style="color: var(--accent-gold); text-decoration: none;">https://www.youtube.com/watch?v=Raj12AUTKUA</a>. Accessed 18 May 2026.</p>
+            
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.2);">
+            
+            <p>Gemini. "Ap Biology Project Errors" Gemini, May 2026 version, Google, 29 May 2026, <a href="https://gemini.google.com/" target="_blank" style="color: var(--accent-gold); text-decoration: none;">https://gemini.google.com/</a>. --- Used to polish scripts and fix some code errors that I had along the way.</p>
+        </div>
+        <button id="close-resources-btn">Close</button>
+    </div>
 
     <svg id="tree-canvas" viewBox="0 0 1000 1000">
         <g id="camera">
@@ -561,7 +630,7 @@
             "Binocular Vision & Flat Nails.mp4": { url: "https://streamable.com/e/39wwtn?autoplay=1&loop=0", padding: "56.250%" },
             "Bipedal Pelvis Rotation.mp4": { url: "https://streamable.com/e/tgi19p?autoplay=1&loop=0", padding: "56.250%" },
             "Opposable Thumb Precision.mp4": { url: "https://streamable.com/e/tazob4?autoplay=1&loop=0", padding: "56.250%" },
-             "Metabolic Gut Reduction.mp4": { url: "https://player.vimeo.com/video/1196733793?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1", padding: "75%" },
+            "Metabolic Gut Reduction.mp4": { url: "https://drive.google.com/file/d/1ueAnRvIdoH23jSNgxBtoRDUAClWvLf01/preview", padding: "75%" },
             "Symbolic Culture & Encephalization.mp4": { url: "https://streamable.com/e/og6ex8?autoplay=1&loop=0", padding: "56.250%" },
             "StartScreen.mp4": { url: "https://streamable.com/e/0cfs4o?autoplay=1&loop=0&nocontrols=1", padding: "56.250%" }
         };
@@ -1216,6 +1285,14 @@
         document.getElementById('begin-evolution-btn').onclick = beginEvolution;
         document.getElementById('restart-game-btn').onclick = () => location.reload();
         document.getElementById('go-back-btn').onclick = goBack;
+
+        // Resources Panel Handlers
+        document.getElementById('resources-btn').onclick = () => {
+            document.getElementById('resources-panel').classList.add('active');
+        };
+        document.getElementById('close-resources-btn').onclick = () => {
+            document.getElementById('resources-panel').classList.remove('active');
+        };
 
         // Start the background lineages on load
         initBackgroundAnimation();
